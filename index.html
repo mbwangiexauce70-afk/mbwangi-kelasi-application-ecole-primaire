@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mbwangi Kelasi Primaire - Application d'Étude</title>
+<style>
+*{box-sizing:border-box} body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f6f8;color:#1a2332;line-height:1.5}
+header{background:#0f2a4d;color:#fff;padding:24px 16px;text-align:center}
+header h1{margin:0;font-size:28px;letter-spacing:.5px} header p{margin:6px 0 0;opacity:.92}
+nav{position:sticky;top:0;z-index:10;background:#fff;padding:12px;display:flex;flex-wrap:wrap;gap:8px;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.08)}
+nav button,nav select{padding:10px 14px;border:1px solid #0f2a4d;background:#fff;border-radius:8px;cursor:pointer;font-weight:700}
+nav button.active{background:#0f2a4d;color:#fff}
+.filters{background:#fff;margin:16px auto;max-width:1020px;padding:14px;border-radius:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.filters label{font-weight:700;font-size:13px} .filters select{padding:10px;border-radius:8px;border:1px solid #ccc;min-width:170px}
+main{max-width:1020px;margin:0 auto;padding:6px 16px 20px}
+.card{background:#fff;border-radius:12px;padding:18px;margin-bottom:14px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.badge{display:inline-block;background:#eef2ff;color:#0f2a4d;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700}
+h2{margin:8px 0 14px} h3{margin:8px 0}
+.matiere{border-left:6px solid #0f2a4d} .matiere.fr{background:#fff} .matiere.sc{border-left-color:#1fa855}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.sub{border:1px solid #e2e8f0;border-radius:10px;padding:14px;background:#f8fafc;cursor:pointer}
+.sub:hover{border-color:#0f2a4d;background:#eef2ff} .sub b{font-size:16px}
+.q label{display:block;background:#f8fafc;border:1px solid #ddd;padding:10px;border-radius:8px;margin:6px 0;cursor:pointer}
+.btn{background:#0f2a4d;color:#fff;border:0;padding:11px 16px;border-radius:8px;cursor:pointer;font-weight:700;text-decoration:none;display:inline-block}
+.btn.wa{background:#1fa855} .btn.ghost{background:#fff;color:#0f2a4d;border:1px solid #0f2a4d}
+table{width:100%;border-collapse:collapse;background:#fff} td,th{border:1px solid #ddd;padding:10px;text-align:left}
+footer{background:#0f2a4d;color:#fff;text-align:center;padding:24px 16px;margin-top:20px}
+.hidden{display:none} input,textarea,select{padding:10px;border:1px solid #ccc;border-radius:8px;width:100%;margin:6px 0}
+code{background:#eef2ff;padding:2px 6px;border-radius:4px}
+</style>
+</head>
+<body>
+<header><h1>MBWANGI KELASI PRIMAIRE</h1><p>Application d'Étude — Enseignement Primaire | 1ère à 6ème Primaire</p></header>
+<nav>
+<button data-nav="accueil" class="active">Accueil</button><button data-nav="cours">Cours</button><button data-nav="exercices">Exercices</button><button data-nav="devoirs">Devoirs</button><button data-nav="tp">TP</button><button data-nav="enseignants">Enseignants</button>
+</nav>
+<div class="filters">
+<label>Classe : <select id="classe"><option value="1">1ère Primaire</option><option value="2">2ème Primaire</option><option value="3">3ème Primaire</option><option value="4">4ème Primaire</option><option value="5">5ème Primaire</option><option value="6">6ème Primaire</option></select></label>
+<label>Matière : <select id="matiere"><option value="Math">Math</option><option value="Français">Français</option><option value="Sciences">Sciences</option><option value="Toutes">Toutes les matières</option></select></label>
+<label>Sous-branche : <select id="sous"></select></label>
+<span id="choix" class="badge"></span>
+</div>
+<main>
+<section id="accueil">
+<div class="card"><h2>Bienvenue à Mbwangi Kelasi Primaire</h2><p>Choisis ta <b>classe</b>, ta <b>matière</b> et ta <b>sous-branche</b> en haut, puis une rubrique : <b>Cours</b> pour apprendre, <b>Exercices</b> pour t'entraîner (QCM), <b>Devoirs</b> à remettre, <b>TP</b> pour pratiquer. En cas de difficulté, contacte ton enseignant sur WhatsApp.</p>
+<div class="grid">
+<div class="card matiere"><h3>MATH</h3><p>Numération<br>Opérations<br>Géométrie<br>Problème<br>Grandeur</p></div>
+<div class="card matiere"><h3>FRANÇAIS</h3><p>Orthographe<br>Grammaire<br>Conjugaison<br>Vocabulaire<br>Analyse</p></div>
+<div class="card matiere sc"><h3>SCIENCES</h3><p>Botanique<br>Anatomie<br>Zoologie</p></div>
+</div>
+<p><b>Les 6 classes :</b> 1ère, 2ème, 3ème, 4ème, 5ème, 6ème Primaire — chacune a Math, Français, Sciences et leurs 13 sous-branches.</p></div>
+</section>
+<section id="cours" class="hidden"><h2>Cours</h2><div id="coursList"></div></section>
+<section id="exercices" class="hidden"><h2>Exercices — Questions à Choix Multiples</h2><div id="exList"></div></section>
+<section id="devoirs" class="hidden"><h2>Devoirs</h2><div id="devList"></div></section>
+<section id="tp" class="hidden"><h2>Travaux Pratiques (TP)</h2><div id="tpList"></div></section>
+<section id="enseignants" class="hidden"><h2>Enseignants — Contacts WhatsApp</h2>
+<div class="card"><p>En cas de difficulté, contacte l'enseignant de ta classe sur WhatsApp. Tu peux envoyer ton exercice, ton devoir ou ton TP et l'enseignant le verra.</p>
+<table><tr><th>Classe</th><th>Enseignant</th><th>Matière</th><th>WhatsApp</th><th></th></tr>
+<tr><td>1ère</td><td>Mme / mr. mbwangi kivanga exauce </td><td>Toutes matières</td><td>+243 834 209 244</td><td><a class="btn wa" href="https://wa.me/243834209244" target="_blank">Contacter</a></td></tr>
+<tr><td>2ème</td><td>Mme / M. ...</td><td>Toutes matières</td><td>+243 800 000 002</td><td><a class="btn wa" href="https://wa.me/243800000002" target="_blank">Contacter</a></td></tr>
+<tr><td>3ème</td><td>Mme / M. ...</td><td>Toutes matières</td><td>+243 800 000 003</td><td><a class="btn wa"  href="https://wa.me/243800000003" target="_blank">Contacter</a></td></tr>
+<tr><td>4ème</td><td>Mme / M. ...</td><td>Toutes matières</td><td>+243 800 000 004</td><td><a class="btn wa" href="https://wa.me/243800000004" target="_blank">Contacter</a></td></tr>
+<tr><td>5ème</td><td>Mme / M. ...</td><td>Toutes matières</td><td>+243 800 000 005</td><td><a class="btn wa" href="https://wa.me/243800000005" target="_blank">Contacter</a></td></tr>
+<tr><td>6ème</td><td>Mme / M. ...</td><td>Toutes matières</td><td>+243 800 000 006</td><td><a class="btn wa" href="https://wa.me/243800000006" target="_blank">Contacter</a></td></tr>
+</table></div>
+<div class="card"><h3>Ajouter / Modifier un enseignant</h3><input placeholder="Nom : Mme / M. ..."><input placeholder="Classe : 1 à 6"><input placeholder="Matière : Math / Français / Sciences"><input placeholder="Numéro WhatsApp : +243 ..."><button class="btn" onclick="alert('Enregistré. Remplace ce formulaire par ta base de données si tu veux le garder.')">Enregistrer</button></div>
+</section>
+<section class="card"><h3>Comment ajouter un cours ?</h3>
+<p><b>1.</b> Ouvre ce fichier dans Notepad / VS Code.<br><b>2.</b> Cherche <code>const COURS</code> en bas du fichier.<br><b>3.</b> Copie un bloc cours, change <code>classe</code>, <code>matiere</code>, <code>sous</code>, titre, objectif, contenu.<br><b>4.</b> Enregistre et actualise la page. Même logique pour <code>EXERCICES</code>, <code>DEVOIRS</code>, <code>TP</code>.</p>
+<pre style="background:#0f2a4d;color:#fff;padding:12px;border-radius:8px;overflow:auto">{classe:1, matiere:"Math", sous:"Numération", titre:"Les nombres de 0 à 10", objectif:"...", contenu:"...", exemples:"...", retenir:"..."}</pre>
+</section>
+</main>
+<footer><b>Mbwangi Kelasi Primaire — Application d'Étude - Enseignement Primaire</b><br>Créé par Ir. Mbwangi CP Kivanga Exaucé — Ingénieur en Dév. Web et Applis, Infographiste et Designer</footer>
+<script>
+const SOUS={Math:["Numération","Opérations","Géométrie","Problème","Grandeur"],Français:["Orthographe","Grammaire","Conjugaison","Vocabulaire","Analyse"],Sciences:["Botanique","Anatomie","Zoologie"]};
+// ===== COURS : 1 modèle par sous-branche (à dupliquer pour chaque classe, changer classe) =====
+const COURS=[
+{classe:1,matiere:"Math",sous:"Numération",titre:"Les nombres de 0 à 11",objectif:"Compter de 0 à 10.",contenu:"On compte : 0,1,2,3,4,5,6,7,8,9,10,11.",exemples:"3 = trois, 7 = sept.",retenir:"Savoir compter de 0 à 10."},
+{classe:1,matiere:"Math",sous:"Numération",titre:"2) Les nombres de 0 à 10",objectif:"Compter de 0 à 10.",contenu:"On compte : 0,1,2,3,4,5,6,7,8,9,10.",exemples:"3 = trois, 7 = sept.",retenir:"Savoir compter de 0 à 10."},
+{classe:1,matiere:"Math",sous:"Opérations",titre:"Addition simple",objectif:"Additionner deux petits nombres.",contenu:"On ajoute : 2 + 3 = 5.",exemples:"1+1=2.",retenir:"Addition = ajouter."},
+{classe:1,matiere:"Math",sous:"Géométrie",titre:"Les formes",objectif:"Reconnaître rond, carré, triangle.",contenu:"Le ballon est rond, la fenêtre est carrée.",exemples:"Cherche un rond dans la classe.",retenir:"Rond, carré, triangle."},
+{classe:1,matiere:"Math",sous:"Problème",titre:"Petit problème",objectif:"Comprendre un petit problème.",contenu:"Kito a 3 billes, on lui donne 2. Combien ?",exemples:"3+2=5.",retenir:"Je lis, je calcule, je vérifie."},
+{classe:1,matiere:"Math",sous:"Grandeur",titre:"Long / Court",objectif:"Comparer long et court.",contenu:"La règle est longue, le crayon est court.",exemples:"Compare deux objets.",retenir:"Long ≠ court."},
+{classe:1,matiere:"Français",sous:"Orthographe",titre:"Les lettres",objectif:"Connaître les lettres.",contenu:"A,B,C... On écrit de gauche à droite.",exemples:"A comme ami.",retenir:"Je connais l'alphabet."},
+{classe:1,matiere:"Français",sous:"Grammaire",titre:"Le nom",objectif:"Reconnaître le nom.",contenu:"Le nom désigne une personne ou une chose.",exemples:"Le maître, la table.",retenir:"Le nom = le, la, les."},
+{classe:1,matiere:"Français",sous:"Conjugaison",titre:"Je suis, tu es",objectif:"Dire qui je suis.",contenu:"Je suis élève. Tu es élève.",exemples:"Je suis en 1ère.",retenir:"Je suis / Tu es."},
+{classe:1,matiere:"Français",sous:"Vocabulaire",titre:"Les mots de la classe",objectif:"Nommer les objets de la classe.",contenu:"Le banc, le tableau, la craie.",exemples:"Je m'assois sur le banc.",retenir:"5 mots de la classe."},
+{classe:1,matiere:"Français",sous:"Analyse",titre:"La phrase simple",objectif:"Reconnaître une phrase.",contenu:"Phrase = majuscule + point.",exemples:"L'élève lit.",retenir:"Majuscule + point."},
+{classe:1,matiere:"Sciences",sous:"Botanique",titre:"La plante",objectif:"Nommer racine, tige, feuilles.",contenu:"La plante a racine, tige, feuilles.",exemples:"La racine absorbe l'eau.",retenir:"Racine, tige, feuilles."},
+{classe:1,matiere:"Sciences",sous:"Anatomie",titre:"Mon corps",objectif:"Nommer tête, bras, jambes.",contenu:"J'ai une tête, deux bras, deux jambes.",exemples:"Je montre ma tête.",retenir:"Tête, bras, jambes."},
+{classe:1,matiere:"Sciences",sous:"Zoologie",titre:"Les animaux",objectif:"Nommer les animaux.",contenu:"Le chien, le chat, la poule.",exemples:"Le chien aboie.",retenir:"Chien, chat, poule."},
+{classe:2,matiere:"Math",sous:"Numération",titre:"Les nombres de 0 à 100",objectif:"Compter jusqu'à 100.",contenu:"On compte : 10,20,30...100.",exemples:"25 = vingt-cinq.",retenir:"Savoir compter jusqu'à 100."},
+{classe:2,matiere:"Math",sous:"Opérations",titre:"Addition avec retenue",objectif:"Additionner avec retenue.",contenu:"On additionne unités puis dizaines, on retient si besoin.",exemples:"27 + 15 = 42.",retenir:"Ne pas oublier la retenue."},
+{classe:2,matiere:"Math",sous:"Géométrie",titre:"Lignes et formes",objectif:"Reconnaître ligne droite, courbe, carré.",contenu:"La règle trace une ligne droite.",exemples:"Trace une ligne droite.",retenir:"Droite, courbe, carré."},
+{classe:2,matiere:"Math",sous:"Problème",titre:"Problème simple",objectif:"Résoudre un petit problème.",contenu:"Maman achète 12 mangues et 8 oranges.",exemples:"12+8=20 fruits.",retenir:"Je lis, je calcule."},
+{classe:2,matiere:"Math",sous:"Grandeur",titre:"Comparer les longueurs",objectif:"Comparer plus long, plus court.",contenu:"On mesure avec la règle.",exemples:"Le banc est plus long que le crayon.",retenir:"Plus long / plus court."},
+{classe:2,matiere:"Français",sous:"Orthographe",titre:"Les sons simples",objectif:"Écrire les sons a,e,i,o,u.",contenu:"Chaque lettre a un son.",exemples:"a comme ami.",retenir:"J'écoute le son."},
+{classe:2,matiere:"Français",sous:"Grammaire",titre:"Le nom et l'article",objectif:"Nom avec le, la, les.",contenu:"Le nom est avec le, la, les.",exemples:"Le maître, la table.",retenir:"Le, la, les + nom."},
+{classe:2,matiere:"Français",sous:"Conjugaison",titre:"Je suis, tu es, il est",objectif:"Conjuguer être au présent.",contenu:"Je suis, tu es, il est.",exemples:"Je suis élève.",retenir:"Être au présent."},
+{classe:2,matiere:"Français",sous:"Vocabulaire",titre:"Les mots de la maison",objectif:"Nommer les objets de la maison.",contenu:"La porte, la fenêtre, la chaise.",exemples:"Je m'assois sur la chaise.",retenir:"5 mots de la maison."},
+{classe:2,matiere:"Français",sous:"Analyse",titre:"La phrase : sujet",objectif:"Trouver qui fait l'action.",contenu:"Dans 'L'élève lit', c'est l'élève qui lit.",exemples:"Qui lit ? L'élève.",retenir:"Sujet = qui ?"},
+{classe:2,matiere:"Sciences",sous:"Botanique",titre:"Les feuilles",objectif:"Observer les feuilles.",contenu:"Les feuilles ont des formes différentes.",exemples:"La feuille de manguier est grande.",retenir:"Forme et couleur."},
+{classe:2,matiere:"Sciences",sous:"Anatomie",titre:"Les parties du corps",objectif:"Nommer les parties du corps.",contenu:"Tête, bras, mains, jambes, pieds.",exemples:"J'ai deux mains.",retenir:"Tête, bras, pieds."},
+{classe:2,matiere:"Sciences",sous:"Zoologie",titre:"Les animaux domestiques",objectif:"Nommer les animaux de la maison.",contenu:"Chien, chat, poule, chèvre.",exemples:"La poule pond des oeufs.",retenir:"Animaux domestiques."},
+{classe:3,matiere:"Math",sous:"Numération",titre:"Les nombres jusqu'à 1000",objectif:"Compter jusqu'à 1000.",contenu:"On compte par 100 : 100,200...1000.",exemples:"250 = deux cent cinquante.",retenir:"Savoir compter jusqu'à 1000."},
+{classe:3,matiere:"Math",sous:"Opérations",titre:"Soustraction avec retenue",objectif:"Soustraire avec retenue.",contenu:"On emprunte 1 dizaine si besoin.",exemples:"52 - 28 = 24.",retenir:"Vérifier avec l'addition."},
+{classe:3,matiere:"Math",sous:"Géométrie",titre:"Le carré et le rectangle",objectif:"Distinguer carré et rectangle.",contenu:"Carré = 4 côtés égaux. Rectangle = 2 grands, 2 petits.",exemples:"La fenêtre est un rectangle.",retenir:"Carré = 4 côtés égaux."},
+{classe:3,matiere:"Math",sous:"Problème",titre:"Problème à une opération",objectif:"Choisir la bonne opération.",contenu:"Lire, choisir + ou - ou x.",exemples:"Jean a 15 billes, il en perd 6. Il reste 9.",retenir:"Choisir l'opération."},
+{classe:3,matiere:"Math",sous:"Grandeur",titre:"Mesurer avec la règle",objectif:"Mesurer en cm.",contenu:"Le crayon mesure 12 cm.",exemples:"Mesure ton cahier.",retenir:"Mesurer en cm."},
+{classe:3,matiere:"Français",sous:"Orthographe",titre:"Les sons complexes",objectif:"Écrire ou, ch, gn.",contenu:"ch comme chocolat.",exemples:"Le chat dort.",retenir:"ou, ch, gn."},
+{classe:3,matiere:"Français",sous:"Grammaire",titre:"Le masculin et le féminin",objectif:"Distinguer masculin / féminin.",contenu:"Un garçon, une fille.",exemples:"Un ami, une amie.",retenir:"Masculin / féminin."},
+{classe:3,matiere:"Français",sous:"Conjugaison",titre:"Le présent",objectif:"Conjuguer au présent.",contenu:"Au présent, on dit ce qui se passe maintenant.",exemples:"Je mange, tu manges.",retenir:"Présent = maintenant."},
+{classe:3,matiere:"Français",sous:"Vocabulaire",titre:"Les mots de la famille",objectif:"Nommer la famille.",contenu:"Papa, maman, frère, soeur.",exemples:"Ma maman est gentille.",retenir:"Famille."},
+{classe:3,matiere:"Français",sous:"Analyse",titre:"Sujet et verbe",objectif:"Trouver sujet et verbe.",contenu:"Sujet fait l'action. Verbe dit l'action.",exemples:"L'élève lit.",retenir:"Qui fait ?"},
+{classe:3,matiere:"Sciences",sous:"Botanique",titre:"La graine",objectif:"Comprendre la graine.",contenu:"La graine donne une nouvelle plante.",exemples:"Le haricot germe.",retenir:"Graine = bébé plante."},
+{classe:3,matiere:"Sciences",sous:"Anatomie",titre:"Les 5 sens",objectif:"Connaître les 5 sens.",contenu:"Voir, entendre, toucher, goûter, sentir.",exemples:"Je vois avec les yeux.",retenir:"5 sens."},
+{classe:3,matiere:"Sciences",sous:"Zoologie",titre:"Les animaux domestiques",objectif:"Connaître les animaux domestiques.",contenu:"Liste 5 animaux domestiques.",exemples:"Quel animal gardes-tu ?",retenir:"Animaux domestiques."},
+{classe:4,matiere:"Math",sous:"Numération",titre:"Les grands nombres",objectif:"Lire les grands nombres.",contenu:"On lit par tranches : mille, million.",exemples:"1 250 = mille deux cent cinquante.",retenir:"Lire les grands nombres."},
+{classe:4,matiere:"Math",sous:"Opérations",titre:"Multiplication à 2 chiffres",objectif:"Multiplier par 2 chiffres.",contenu:"12 x 14 = 168.",exemples:"12 x 10 = 120.",retenir:"Multiplier étape par étape."},
+{classe:4,matiere:"Math",sous:"Géométrie",titre:"Le triangle et le cercle",objectif:"Reconnaître triangle et cercle.",contenu:"Triangle = 3 côtés. Cercle = rond.",exemples:"Le toit est un triangle.",retenir:"Triangle = 3 côtés."},
+{classe:4,matiere:"Math",sous:"Problème",titre:"Problèmes à deux opérations",objectif:"Résoudre en deux étapes.",contenu:"1. Je lis. 2. Je calcule étape par étape.",exemples:"12+8-5=15.",retenir:"Toujours vérifier."},
+{classe:4,matiere:"Math",sous:"Grandeur",titre:"Mètre et centimètre",objectif:"Convertir m et cm.",contenu:"1 m = 100 cm.",exemples:"Le banc mesure 2 m.",retenir:"1 m = 100 cm."},
+{classe:4,matiere:"Français",sous:"Orthographe",titre:"Les accents",objectif:"Utiliser é, è, ê.",contenu:"é comme école. è comme mère.",exemples:"école, élève, mère.",retenir:"L'accent change le son."},
+{classe:4,matiere:"Français",sous:"Grammaire",titre:"Le singulier et le pluriel",objectif:"Distinguer singulier / pluriel.",contenu:"Un cahier, des cahiers.",exemples:"Un enfant, des enfants.",retenir:"Singulier / pluriel."},
+{classe:4,matiere:"Français",sous:"Conjugaison",titre:"Le futur",objectif:"Conjuguer au futur.",contenu:"Demain, je lirai.",exemples:"Je partirai demain.",retenir:"Futur = demain."},
+{classe:4,matiere:"Français",sous:"Vocabulaire",titre:"Les mots du marché",objectif:"Nommer les aliments.",contenu:"La mangue, la banane, le riz.",exemples:"J'achète des mangues.",retenir:"Marché."},
+{classe:4,matiere:"Français",sous:"Analyse",titre:"Sujet, verbe, complément",objectif:"Trouver les 3 parties.",contenu:"L'élève lit son livre.",exemples:"Qui ? Fait quoi ? Quoi ?",retenir:"Sujet, verbe, complément."},
+{classe:4,matiere:"Sciences",sous:"Botanique",titre:"La germination",objectif:"Suivre la germination.",contenu:"Graine + eau + terre = jeune plante.",exemples:"Après 3 jours, la tige sort.",retenir:"Germination."},
+{classe:4,matiere:"Sciences",sous:"Anatomie",titre:"Les sens",objectif:"Utiliser les 5 sens.",contenu:"Je vois, j'entends, je touche.",exemples:"Avec quoi vois-tu ?",retenir:"5 sens."},
+{classe:4,matiere:"Sciences",sous:"Zoologie",titre:"Les animaux sauvages",objectif:"Nommer les animaux sauvages.",contenu:"Le lion, l'éléphant, le singe.",exemples:"Le lion vit dans la savane.",retenir:"Animaux sauvages."},
+{classe:5,matiere:"Math",sous:"Numération",titre:"Nombres décimaux",objectif:"Comprendre les décimaux.",contenu:"1,5 = 1 unité et 5 dixièmes.",exemples:"2,5 est entre 2 et 3.",retenir:"Décimal = virgule."},
+{classe:5,matiere:"Math",sous:"Opérations",titre:"Division",objectif:"Diviser.",contenu:"48 ÷ 4 = 12.",exemples:"96 ÷ 8 = 12.",retenir:"Division = partage."},
+{classe:5,matiere:"Math",sous:"Géométrie",titre:"Tracer carré et rectangle",objectif:"Tracer avec règle et équerre.",contenu:"Carré de 5 cm, rectangle de 6 cm sur 3 cm.",exemples:"Vérifie les angles droits.",retenir:"Angle droit = équerre."},
+{classe:5,matiere:"Math",sous:"Problème",titre:"Problème avec argent",objectif:"Calculer avec l'argent.",contenu:"Un cahier coûte 500 FC, j'achète 3 cahiers.",exemples:"3 x 500 = 1500 FC.",retenir:"Compter l'argent."},
+{classe:5,matiere:"Math",sous:"Grandeur",titre:"Les mesures de longueur",objectif:"Mesurer en m, cm, km.",contenu:"1 m = 100 cm. 1 km = 1000 m.",exemples:"Le banc mesure 2 m.",retenir:"1 m = 100 cm."},
+{classe:5,matiere:"Français",sous:"Orthographe",titre:"Le pluriel",objectif:"Mettre au pluriel.",contenu:"On ajoute s en général.",exemples:"Un livre, des livres.",retenir:"Pluriel = s."},
+{classe:5,matiere:"Français",sous:"Grammaire",titre:"L'adjectif",objectif:"Reconnaître l'adjectif.",contenu:"L'adjectif dit comment est le nom.",exemples:"Un grand livre.",retenir:"Adjectif = comment ?"},
+{classe:5,matiere:"Français",sous:"Conjugaison",titre:"Le passé composé",objectif:"Conjuguer au passé composé.",contenu:"Hier, j'ai mangé.",exemples:"J'ai lu mon livre.",retenir:"Passé = hier."},
+{classe:5,matiere:"Français",sous:"Vocabulaire",titre:"Les contraires",objectif:"Trouver les contraires.",contenu:"Grand / petit. Chaud / froid.",exemples:"Grand ≠ petit.",retenir:"Contraire = opposé."},
+{classe:5,matiere:"Français",sous:"Analyse",titre:"Sujet et verbe",objectif:"Trouver sujet et verbe.",contenu:"Le sujet fait l'action.",exemples:"Les enfants jouent.",retenir:"Qui fait l'action ?"},
+{classe:5,matiere:"Sciences",sous:"Botanique",titre:"Les parties de la fleur",objectif:"Nommer les parties de la fleur.",contenu:"Pétale, tige, feuille.",exemples:"La fleur attire les abeilles.",retenir:"Fleur."},
+{classe:5,matiere:"Sciences",sous:"Anatomie",titre:"Les os et les muscles",objectif:"Connaître os et muscles.",contenu:"Les os soutiennent, les muscles bougent.",exemples:"Je plie mon bras.",retenir:"Os + muscles."},
+{classe:5,matiere:"Sciences",sous:"Zoologie",titre:"Les insectes",objectif:"Connaître les insectes.",contenu:"L'insecte a 6 pattes.",exemples:"La fourmi, l'abeille.",retenir:"6 pattes."},
+{classe:6,matiere:"Math",sous:"Numération",titre:"Fractions et décimaux",objectif:"Lier fraction et décimal.",contenu:"1/2 = 0,5. 1/4 = 0,25.",exemples:"3/4 = 0,75.",retenir:"1/2 = 0,5."},
+{classe:6,matiere:"Math",sous:"Opérations",titre:"Multiplication et division",objectif:"Multiplier et diviser.",contenu:"12 x 4 = 48. 48 ÷ 4 = 12.",exemples:"6 x 7 = 42.",retenir:"Division = inverse de multiplication."},
+{classe:6,matiere:"Math",sous:"Géométrie",titre:"Périmètre et aire",objectif:"Calculer périmètre et aire.",contenu:"Périmètre carré = côté x 4. Aire = côté x côté.",exemples:"Carré 5 cm : périmètre 20 cm, aire 25 cm².",retenir:"Périmètre = tour."},
+{classe:6,matiere:"Math",sous:"Problème",titre:"Problème de partage",objectif:"Partager équitablement.",contenu:"24 bonbons pour 6 enfants : 4 chacun.",exemples:"24 ÷ 6 = 4.",retenir:"Partage = division."},
+{classe:6,matiere:"Math",sous:"Grandeur",titre:"Poids et capacité",objectif:"Mesurer poids et capacité.",contenu:"1 kg = 1000 g. 1 L = 1000 mL.",exemples:"Un sac de riz = 5 kg.",retenir:"1 kg = 1000 g."},
+{classe:6,matiere:"Français",sous:"Orthographe",titre:"Homophones",objectif:"Distinguer a / à, et / est.",contenu:"a = verbe avoir. à = lieu.",exemples:"Il a un livre. Il va à l'école.",retenir:"a / à, et / est."},
+{classe:6,matiere:"Français",sous:"Grammaire",titre:"Les pronoms",objectif:"Reconnaître les pronoms.",contenu:"Je, tu, il, nous, vous, ils.",exemples:"Il lit son livre.",retenir:"Pronom remplace le nom."},
+{classe:6,matiere:"Français",sous:"Conjugaison",titre:"L'imparfait",objectif:"Conjuguer à l'imparfait.",contenu:"Avant, je jouais.",exemples:"Quand j'étais petit, je jouais.",retenir:"Imparfait = avant."},
+{classe:6,matiere:"Français",sous:"Vocabulaire",titre:"Les synonymes",objectif:"Trouver des mots de même sens.",contenu:"Content = heureux.",exemples:"Grand = immense.",retenir:"Synonyme = même sens."},
+{classe:6,matiere:"Français",sous:"Analyse",titre:"Analyse de la phrase",objectif:"Analyser une phrase complète.",contenu:"Nature et fonction : nom, verbe, adjectif.",exemples:"L'élève attentif lit son livre.",retenir:"Analyser = nature + fonction."},
+{classe:6,matiere:"Sciences",sous:"Botanique",titre:"La germination",objectif:"Suivre la germination.",contenu:"Plante 3 graines, arrose, observe 7 jours.",exemples:"Note chaque jour la croissance.",retenir:"Observer chaque jour."},
+{classe:6,matiere:"Sciences",sous:"Anatomie",titre:"La digestion",objectif:"Comprendre la digestion.",contenu:"Bouche, estomac, intestins.",exemples:"Où va la nourriture après l'estomac ?",retenir:"Bouche, estomac, intestins."},
+{classe:6,matiere:"Sciences",sous:"Zoologie",titre:"Les oiseaux et les poissons",objectif:"Distinguer oiseaux et poissons.",contenu:"L'oiseau vole, le poisson nage.",exemples:"Le poisson vit dans l'eau.",retenir:"Oiseau / poisson."},
+];
+<!-- ===== ICI TU COLLES POUR LA 3ème, 4ème, 5ème, 6ème : JUSTE EN DESSOUS DE LA 2ème, AVANT LE ]; DE COURS ===== -->
+// Pour les classes 2 à 6, le même modèle s'applique : copie un bloc ci-dessus et change classe:2, classe:3... et adapte le niveau. Exemples déjà prêts pour 4ème et 6ème :
+const EXERCICES=[
+{classe:1,matiere:"Math",sous:"Numération",q:"1°) Combien font 2 + 3 ?",opts:["4","5","6","3"],rep:1,expl:"2 + 3 = 5."},
+{classe:1,matiere:"Math",sous:"Numération",q:"2°) Combien font 2 + 3 ?",opts:["4","5","6","3"],rep:1,expl:"2 + 3 = 5."},
+{classe:1,matiere:"Math",sous:"Opérations",q:"Combien font 1 + 1 ?",opts:["1","2","3","0"],rep:1,expl:"1+1=2."},
+{classe:1,matiere:"Math",sous:"Géométrie",q:"Quelle forme est ronde ?",opts:["Carré","Cercle","Triangle","Rectangle"],rep:1,expl:"Le cercle est rond."},
+{classe:1,matiere:"Math",sous:"Problème",q:"Kito a 3 billes, on lui donne 2. Combien ?",opts:["4","5","6","3"],rep:1,expl:"3+2=5."},
+{classe:1,matiere:"Math",sous:"Grandeur",q:"Lequel est le plus long ?",opts:["Le crayon","La règle","La gomme","Le doigt"],rep:1,expl:"La règle est plus longue."},
+{classe:1,matiere:"Français",sous:"Orthographe",q:"Quelle lettre vient après A ?",opts:["C","B","D","Z"],rep:1,expl:"Après A vient B."},
+{classe:1,matiere:"Français",sous:"Grammaire",q:"Quel mot est un nom ?",opts:["Courir","Chien","Vite","Rouge"],rep:1,expl:"Chien est un nom."},
+{classe:1,matiere:"Français",sous:"Conjugaison",q:"Je ___ élève.",opts:["suis","es","est","sommes"],rep:0,expl:"Je suis."},
+{classe:1,matiere:"Français",sous:"Vocabulaire",q:"On écrit avec ?",opts:["Le banc","La craie","La porte","La cour"],rep:1,expl:"On écrit avec la craie."},
+{classe:1,matiere:"Français",sous:"Analyse",q:"Une phrase commence par ?",opts:["Une minuscule","Une majuscule","Un point","Une virgule"],rep:1,expl:"Majuscule."},
+{classe:1,matiere:"Sciences",sous:"Botanique",q:"Quelle partie absorbe l'eau ?",opts:["La feuille","La racine","La fleur","La tige"],rep:1,expl:"La racine absorbe l'eau."},
+{classe:1,matiere:"Sciences",sous:"Anatomie",q:"Je montre ma ?",opts:["Tête","Table","Porte","Craie"],rep:0,expl:"Je montre ma tête."},
+{classe:1,matiere:"Sciences",sous:"Zoologie",q:"Lequel est un animal ?",opts:["Le chien","La table","Le banc","Le livre"],rep:0,expl:"Le chien."},
+{classe:2,matiere:"Math",sous:"Numération",q:"Combien font 10 + 20 ?",opts:["20","30","40","25"],rep:1,expl:"10 + 20 = 30."},
+{classe:2,matiere:"Math",sous:"Opérations",q:"27 + 15 = ?",opts:["32","42","52","37"],rep:1,expl:"27+15=42."},
+{classe:2,matiere:"Math",sous:"Géométrie",q:"La règle trace une ?",opts:["Ligne courbe","Ligne droite","Cercle","Point"],rep:1,expl:"La règle trace une ligne droite."},
+{classe:2,matiere:"Math",sous:"Problème",q:"12 mangues + 8 oranges = ?",opts:["18","20","22","16"],rep:1,expl:"12+8=20."},
+{classe:2,matiere:"Math",sous:"Grandeur",q:"On mesure avec ?",opts:["La craie","La règle","Le livre","La porte"],rep:1,expl:"On mesure avec la règle."},
+{classe:2,matiere:"Français",sous:"Orthographe",q:"Le son 'a' dans ?",opts:["ami","école","livre","table"],rep:0,expl:"a comme ami."},
+{classe:2,matiere:"Français",sous:"Grammaire",q:"Le bon article : ___ maître ?",opts:["Le","La","Les","Un"],rep:0,expl:"Le maître."},
+{classe:2,matiere:"Français",sous:"Conjugaison",q:"Je ___ élève, tu ___ élève.",opts:["suis, es","es, suis","est, suis","suis, est"],rep:0,expl:"Je suis, tu es."},
+{classe:2,matiere:"Français",sous:"Vocabulaire",q:"On s'assoit sur ?",opts:["La porte","La chaise","Le tableau","La cour"],rep:1,expl:"On s'assoit sur la chaise."},
+{classe:2,matiere:"Français",sous:"Analyse",q:"Dans 'L'élève lit', qui lit ?",opts:["L'élève","lit","le","la"],rep:0,expl:"L'élève."},
+{classe:2,matiere:"Sciences",sous:"Botanique",q:"La feuille de manguier est ?",opts:["Petite","Grande","Rouge","Ronde"],rep:1,expl:"Grande."},
+{classe:2,matiere:"Sciences",sous:"Anatomie",q:"J'ai combien de mains ?",opts:["1","2","3","4"],rep:1,expl:"J'ai deux mains."},
+{classe:2,matiere:"Sciences",sous:"Zoologie",q:"La poule pond ?",opts:["Des oeufs","Des livres","Des cailloux","Des fleurs"],rep:0,expl:"La poule pond des oeufs."},
+{classe:3,matiere:"Math",sous:"Numération",q:"Combien font 100 + 200 ?",opts:["200","300","400","250"],rep:1,expl:"100 + 200 = 300."},
+{classe:3,matiere:"Math",sous:"Opérations",q:"52 - 28 = ?",opts:["24","34","20","30"],rep:0,expl:"52-28=24."},
+{classe:3,matiere:"Math",sous:"Géométrie",q:"Le carré a combien de côtés égaux ?",opts:["2","3","4","5"],rep:2,expl:"Le carré a 4 côtés égaux."},
+{classe:3,matiere:"Math",sous:"Problème",q:"Jean a 15 billes, il en perd 6. Il reste ?",opts:["6","9","10","12"],rep:1,expl:"15-6=9."},
+{classe:3,matiere:"Math",sous:"Grandeur",q:"Le crayon mesure ?",opts:["12 cm","12 m","12 km","120 m"],rep:0,expl:"Le crayon mesure 12 cm."},
+{classe:3,matiere:"Français",sous:"Orthographe",q:"Le son 'ch' dans ?",opts:["chat","lit","papa","ami"],rep:0,expl:"ch comme chat."},
+{classe:3,matiere:"Français",sous:"Grammaire",q:"Le féminin de 'ami' ?",opts:["ami","amie","amis","amies"],rep:1,expl:"Une amie."},
+{classe:3,matiere:"Français",sous:"Conjugaison",q:"Je ___ mon livre.",opts:["lis","lire","lu","lisons"],rep:0,expl:"Je lis."},
+{classe:3,matiere:"Français",sous:"Vocabulaire",q:"Maman, papa, frère = ?",opts:["La famille","La classe","Le marché","La maison"],rep:0,expl:"C'est la famille."},
+{classe:3,matiere:"Français",sous:"Analyse",q:"Dans 'L'élève lit', le verbe est ?",opts:["L'élève","lit","son","le"],rep:1,expl:"Lit est le verbe."},
+{classe:3,matiere:"Sciences",sous:"Botanique",q:"La graine donne ?",opts:["Un animal","Une plante","Un caillou","Un livre"],rep:1,expl:"La graine donne une plante."},
+{classe:3,matiere:"Sciences",sous:"Anatomie",q:"Je vois avec ?",opts:["Les oreilles","Les yeux","Le nez","La bouche"],rep:1,expl:"Je vois avec les yeux."},
+{classe:3,matiere:"Sciences",sous:"Zoologie",q:"Quel animal gardes-tu à la maison ?",opts:["Le chien","Le lion","L'éléphant","Le singe"],rep:0,expl:"Le chien."},
+{classe:4,matiere:"Math",sous:"Numération",q:"Quel nombre vient après 999 ?",opts:["998","1000","999","1010"],rep:1,expl:"Après 999 vient 1000."},
+{classe:4,matiere:"Math",sous:"Opérations",q:"12 x 14 = ?",opts:["168","148","158","178"],rep:0,expl:"12 x 14 = 168."},
+{classe:4,matiere:"Math",sous:"Géométrie",q:"Le triangle a combien de côtés ?",opts:["2","3","4","5"],rep:1,expl:"Le triangle a 3 côtés."},
+{classe:4,matiere:"Math",sous:"Problème",q:"12 + 8 - 5 = ?",opts:["10","15","20","25"],rep:1,expl:"12+8=20, 20-5=15."},
+{classe:4,matiere:"Math",sous:"Grandeur",q:"1 m = ?",opts:["10 cm","100 cm","1000 cm","1 cm"],rep:1,expl:"1 m = 100 cm."},
+{classe:4,matiere:"Français",sous:"Orthographe",q:"Le mot avec le bon accent ?",opts:["ecole","école","ecôle","ecolè"],rep:1,expl:"On écrit école."},
+{classe:4,matiere:"Français",sous:"Grammaire",q:"Le pluriel de 'cahier' ?",opts:["cahier","cahiers","cahier s","des cahier"],rep:1,expl:"Des cahiers."},
+{classe:4,matiere:"Français",sous:"Conjugaison",q:"Demain, je ___ .",opts:["lirai","lis","ai lu","lisais"],rep:0,expl:"Demain, je lirai."},
+{classe:4,matiere:"Français",sous:"Vocabulaire",q:"On achète au marché ?",opts:["La mangue","Le banc","Le tableau","La craie"],rep:0,expl:"On achète des mangues."},
+{classe:4,matiere:"Français",sous:"Analyse",q:"Dans 'L'élève lit son livre', le complément est ?",opts:["L'élève","lit","son livre","le"],rep:2,expl:"Son livre."},
+{classe:4,matiere:"Sciences",sous:"Botanique",q:"La germination a besoin de ?",opts:["Eau","Feu","Glace","Sable"],rep:0,expl:"Eau."},
+{classe:4,matiere:"Sciences",sous:"Anatomie",q:"Les 5 sens : je vois, j'entends, je touche, je goûte, je ?",opts:["Sens","Dors","Mange","Cours"],rep:0,expl:"Je sens."},
+{classe:4,matiere:"Sciences",sous:"Zoologie",q:"Le lion vit dans ?",opts:["La savane","La mer","La classe","La maison"],rep:0,expl:"La savane."},
+{classe:5,matiere:"Math",sous:"Numération",q:"1,5 est entre ?",opts:["1 et 2","2 et 3","0 et 1","5 et 6"],rep:0,expl:"1,5 est entre 1 et 2."},
+{classe:5,matiere:"Math",sous:"Opérations",q:"48 ÷ 4 = ?",opts:["10","12","14","16"],rep:1,expl:"48 ÷ 4 = 12."},
+{classe:5,matiere:"Math",sous:"Géométrie",q:"Le carré de 5 cm a quel périmètre ?",opts:["10 cm","15 cm","20 cm","25 cm"],rep:2,expl:"5 x 4 = 20 cm."},
+{classe:5,matiere:"Math",sous:"Problème",q:"3 cahiers à 500 FC = ?",opts:["1000 FC","1500 FC","2000 FC","500 FC"],rep:1,expl:"3 x 500 = 1500 FC."},
+{classe:5,matiere:"Math",sous:"Grandeur",q:"1 m = ?",opts:["10 cm","100 cm","1000 cm","1 cm"],rep:1,expl:"1 m = 100 cm."},
+{classe:5,matiere:"Français",sous:"Orthographe",q:"Le pluriel de 'livre' ?",opts:["livre","livres","livre s","des livre"],rep:1,expl:"Un livre, des livres."},
+{classe:5,matiere:"Français",sous:"Grammaire",q:"L'adjectif dans 'un grand livre' ?",opts:["un","grand","livre","le"],rep:1,expl:"Grand est l'adjectif."},
+{classe:5,matiere:"Français",sous:"Conjugaison",q:"Hier, j'___ mangé.",opts:["ai","as","a","avons"],rep:0,expl:"J'ai mangé."},
+{classe:5,matiere:"Français",sous:"Vocabulaire",q:"Le contraire de 'grand' ?",opts:["grand","petit","immense","gros"],rep:1,expl:"Grand ≠ petit."},
+{classe:5,matiere:"Français",sous:"Analyse",q:"Dans 'Les enfants jouent', le sujet est ?",opts:["jouent","Les enfants","Les","enfants"],rep:1,expl:"Les enfants."},
+{classe:5,matiere:"Sciences",sous:"Botanique",q:"La fleur attire ?",opts:["Les abeilles","Les poissons","Les pierres","Les livres"],rep:0,expl:"Les abeilles."},
+{classe:5,matiere:"Sciences",sous:"Anatomie",q:"Les os ?",opts:["Soutiennent","Bougent","Mangent","Dorment"],rep:0,expl:"Les os soutiennent."},
+{classe:5,matiere:"Sciences",sous:"Zoologie",q:"L'insecte a combien de pattes ?",opts:["4","6","8","2"],rep:1,expl:"L'insecte a 6 pattes."},
+{classe:6,matiere:"Math",sous:"Numération",q:"1/2 = ?",opts:["0,2","0,5","1,5","2"],rep:1,expl:"1/2 = 0,5."},
+{classe:6,matiere:"Math",sous:"Opérations",q:"12 x 4 = ?",opts:["36","48","44","52"],rep:1,expl:"12 x 4 = 48."},
+{classe:6,matiere:"Math",sous:"Géométrie",q:"Le périmètre du carré de 5 cm ?",opts:["20 cm","10 cm","25 cm","15 cm"],rep:0,expl:"Périmètre = 5 x 4 = 20 cm."},
+{classe:6,matiere:"Math",sous:"Problème",q:"24 bonbons pour 6 enfants, chacun ?",opts:["3","4","5","6"],rep:1,expl:"24 ÷ 6 = 4."},
+{classe:6,matiere:"Math",sous:"Grandeur",q:"1 kg = ?",opts:["100 g","1000 g","10 g","1 g"],rep:1,expl:"1 kg = 1000 g."},
+{classe:6,matiere:"Français",sous:"Orthographe",q:"Le bon mot ?",opts:["Il a un livre","Il à un livre","Il a une livre","Il à une livre"],rep:0,expl:"Il a un livre."},
+{classe:6,matiere:"Français",sous:"Grammaire",q:"Le pronom dans 'Il lit' ?",opts:["Il","lit","son","le"],rep:0,expl:"Il est un pronom."},
+{classe:6,matiere:"Français",sous:"Conjugaison",q:"Avant, je ___ .",opts:["jouais","joue","jouerai","ai joué"],rep:0,expl:"Avant, je jouais."},
+{classe:6,matiere:"Français",sous:"Vocabulaire",q:"Synonyme de 'content' ?",opts:["triste","heureux","fatigué","petit"],rep:1,expl:"Content = heureux."},
+{classe:6,matiere:"Français",sous:"Analyse",q:"Dans la phrase, 'attentif' est ?",opts:["Un nom","Un verbe","Un adjectif","Un pronom"],rep:2,expl:"Attentif est un adjectif."},
+{classe:6,matiere:"Sciences",sous:"Botanique",q:"La germination : on observe pendant ?",opts:["1 jour","7 jours","1 heure","1 minute"],rep:1,expl:"On observe 7 jours."},
+{classe:6,matiere:"Sciences",sous:"Anatomie",q:"La nourriture va d'abord dans ?",opts:["L'estomac","La bouche","Les intestins","Le pied"],rep:1,expl:"D'abord la bouche."},
+{classe:6,matiere:"Sciences",sous:"Zoologie",q:"Le poisson vit dans ?",opts:["L'eau","Le ciel","La terre","La classe"],rep:0,expl:"Le poisson vit dans l'eau."},
+];
+const DEVOIRS=[
+{classe:1,matiere:"Math",sous:"Numération",titre:"Devoir - Numération",consigne:"Écris les nombres demandés en chiffres et en lettres.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Math",sous:"Numération",titre:"Devoir - Numération",consigne:"travailler et calculer:1. 23+ 24= 2) 23+67=" ,date:"À remettre : Samdei"},
+{classe:1,matiere:"Math",sous:"Opérations",titre:"Devoir - Opérations",consigne:"Calcule les 5 opérations proposées dans ton cahier.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Math",sous:"Géométrie",titre:"Devoir - Géométrie",consigne:"Dessine la figure demandée et nomme ses côtés.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Math",sous:"Problème",titre:"Devoir - Problème",consigne:"Résous 2 problèmes en écrivant les étapes.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Math",sous:"Grandeur",titre:"Devoir - Grandeur",consigne:"Mesure 3 objets à la maison et note les mesures.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Français",sous:"Orthographe",titre:"Devoir - Orthographe",consigne:"Écris 10 mots avec le son / l'accent étudié.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Français",sous:"Grammaire",titre:"Devoir - Grammaire",consigne:"Souligne les noms dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Français",sous:"Conjugaison",titre:"Devoir - Conjugaison",consigne:"Conjugue le verbe étudié au temps étudié.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Français",sous:"Vocabulaire",titre:"Devoir - Vocabulaire",consigne:"Donne 5 mots du thème et dessine-les.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Français",sous:"Analyse",titre:"Devoir - Analyse",consigne:"Trouve le sujet et le verbe dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Sciences",sous:"Botanique",titre:"Devoir - Botanique",consigne:"Dessine une plante et nomme ses parties.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Sciences",sous:"Anatomie",titre:"Devoir - Anatomie",consigne:"Dessine le corps et nomme les parties.",date:"À remettre : Vendredi"},
+{classe:1,matiere:"Sciences",sous:"Zoologie",titre:"Devoir - Zoologie",consigne:"Liste 5 animaux et dis ce qu'ils mangent.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Math",sous:"Numération",titre:"Devoir - Numération",consigne:"Écris les nombres demandés en chiffres et en lettres.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Math",sous:"Opérations",titre:"Devoir - Opérations",consigne:"Calcule les 5 opérations proposées dans ton cahier.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Math",sous:"Géométrie",titre:"Devoir - Géométrie",consigne:"Dessine la figure demandée et nomme ses côtés.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Math",sous:"Problème",titre:"Devoir - Problème",consigne:"Résous 2 problèmes en écrivant les étapes.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Math",sous:"Grandeur",titre:"Devoir - Grandeur",consigne:"Mesure 3 objets à la maison et note les mesures.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Français",sous:"Orthographe",titre:"Devoir - Orthographe",consigne:"Écris 10 mots avec le son / l'accent étudié.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Français",sous:"Grammaire",titre:"Devoir - Grammaire",consigne:"Souligne les noms dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Français",sous:"Conjugaison",titre:"Devoir - Conjugaison",consigne:"Conjugue le verbe étudié au temps étudié.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Français",sous:"Vocabulaire",titre:"Devoir - Vocabulaire",consigne:"Donne 5 mots du thème et dessine-les.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Français",sous:"Analyse",titre:"Devoir - Analyse",consigne:"Trouve le sujet et le verbe dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Sciences",sous:"Botanique",titre:"Devoir - Botanique",consigne:"Dessine une plante et nomme ses parties.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Sciences",sous:"Anatomie",titre:"Devoir - Anatomie",consigne:"Dessine le corps et nomme les parties.",date:"À remettre : Vendredi"},
+{classe:2,matiere:"Sciences",sous:"Zoologie",titre:"Devoir - Zoologie",consigne:"Liste 5 animaux et dis ce qu'ils mangent.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Math",sous:"Numération",titre:"Devoir - Numération",consigne:"Écris les nombres demandés en chiffres et en lettres.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Math",sous:"Opérations",titre:"Devoir - Opérations",consigne:"Calcule les 5 opérations proposées dans ton cahier.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Math",sous:"Géométrie",titre:"Devoir - Géométrie",consigne:"Dessine la figure demandée et nomme ses côtés.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Math",sous:"Problème",titre:"Devoir - Problème",consigne:"Résous 2 problèmes en écrivant les étapes.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Math",sous:"Grandeur",titre:"Devoir - Grandeur",consigne:"Mesure 3 objets à la maison et note les mesures.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Français",sous:"Orthographe",titre:"Devoir - Orthographe",consigne:"Écris 10 mots avec le son / l'accent étudié.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Français",sous:"Grammaire",titre:"Devoir - Grammaire",consigne:"Souligne les noms dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Français",sous:"Conjugaison",titre:"Devoir - Conjugaison",consigne:"Conjugue le verbe étudié au temps étudié.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Français",sous:"Vocabulaire",titre:"Devoir - Vocabulaire",consigne:"Donne 5 mots du thème et dessine-les.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Français",sous:"Analyse",titre:"Devoir - Analyse",consigne:"Trouve le sujet et le verbe dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Sciences",sous:"Botanique",titre:"Devoir - Botanique",consigne:"Dessine une plante et nomme ses parties.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Sciences",sous:"Anatomie",titre:"Devoir - Anatomie",consigne:"Dessine le corps et nomme les parties.",date:"À remettre : Vendredi"},
+{classe:3,matiere:"Sciences",sous:"Zoologie",titre:"Devoir - Zoologie",consigne:"Liste 5 animaux et dis ce qu'ils mangent.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Math",sous:"Numération",titre:"Devoir - Numération",consigne:"Écris les nombres demandés en chiffres et en lettres.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Math",sous:"Opérations",titre:"Devoir - Opérations",consigne:"Calcule les 5 opérations proposées dans ton cahier.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Math",sous:"Géométrie",titre:"Devoir - Géométrie",consigne:"Dessine la figure demandée et nomme ses côtés.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Math",sous:"Problème",titre:"Devoir - Problème",consigne:"Résous 2 problèmes en écrivant les étapes.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Math",sous:"Grandeur",titre:"Devoir - Grandeur",consigne:"Mesure 3 objets à la maison et note les mesures.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Français",sous:"Orthographe",titre:"Devoir - Orthographe",consigne:"Écris 10 mots avec le son / l'accent étudié.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Français",sous:"Grammaire",titre:"Devoir - Grammaire",consigne:"Souligne les noms dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Français",sous:"Conjugaison",titre:"Devoir - Conjugaison",consigne:"Conjugue le verbe étudié au temps étudié.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Français",sous:"Vocabulaire",titre:"Devoir - Vocabulaire",consigne:"Donne 5 mots du thème et dessine-les.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Français",sous:"Analyse",titre:"Devoir - Analyse",consigne:"Trouve le sujet et le verbe dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Sciences",sous:"Botanique",titre:"Devoir - Botanique",consigne:"Dessine une plante et nomme ses parties.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Sciences",sous:"Anatomie",titre:"Devoir - Anatomie",consigne:"Dessine le corps et nomme les parties.",date:"À remettre : Vendredi"},
+{classe:4,matiere:"Sciences",sous:"Zoologie",titre:"Devoir - Zoologie",consigne:"Liste 5 animaux et dis ce qu'ils mangent.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Math",sous:"Numération",titre:"Devoir - Numération",consigne:"Écris les nombres demandés en chiffres et en lettres.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Math",sous:"Opérations",titre:"Devoir - Opérations",consigne:"Calcule les 5 opérations proposées dans ton cahier.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Math",sous:"Géométrie",titre:"Devoir - Géométrie",consigne:"Dessine la figure demandée et nomme ses côtés.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Math",sous:"Problème",titre:"Devoir - Problème",consigne:"Résous 2 problèmes en écrivant les étapes.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Math",sous:"Grandeur",titre:"Devoir - Grandeur",consigne:"Mesure 3 objets à la maison et note les mesures.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Français",sous:"Orthographe",titre:"Devoir - Orthographe",consigne:"Écris 10 mots avec le son / l'accent étudié.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Français",sous:"Grammaire",titre:"Devoir - Grammaire",consigne:"Souligne les noms dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Français",sous:"Conjugaison",titre:"Devoir - Conjugaison",consigne:"Conjugue le verbe étudié au temps étudié.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Français",sous:"Vocabulaire",titre:"Devoir - Vocabulaire",consigne:"Donne 5 mots du thème et dessine-les.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Français",sous:"Analyse",titre:"Devoir - Analyse",consigne:"Trouve le sujet et le verbe dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Sciences",sous:"Botanique",titre:"Devoir - Botanique",consigne:"Dessine une plante et nomme ses parties.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Sciences",sous:"Anatomie",titre:"Devoir - Anatomie",consigne:"Dessine le corps et nomme les parties.",date:"À remettre : Vendredi"},
+{classe:5,matiere:"Sciences",sous:"Zoologie",titre:"Devoir - Zoologie",consigne:"Liste 5 animaux et dis ce qu'ils mangent.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Math",sous:"Numération",titre:"Devoir - Numération",consigne:"Écris les nombres demandés en chiffres et en lettres.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Math",sous:"Opérations",titre:"Devoir - Opérations",consigne:"Calcule les 5 opérations proposées dans ton cahier.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Math",sous:"Géométrie",titre:"Devoir - Géométrie",consigne:"Dessine la figure demandée et nomme ses côtés.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Math",sous:"Problème",titre:"Devoir - Problème",consigne:"Résous 2 problèmes en écrivant les étapes.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Math",sous:"Grandeur",titre:"Devoir - Grandeur",consigne:"Mesure 3 objets à la maison et note les mesures.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Français",sous:"Orthographe",titre:"Devoir - Orthographe",consigne:"Écris 10 mots avec le son / l'accent étudié.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Français",sous:"Grammaire",titre:"Devoir - Grammaire",consigne:"Souligne les noms dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Français",sous:"Conjugaison",titre:"Devoir - Conjugaison",consigne:"Conjugue le verbe étudié au temps étudié.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Français",sous:"Vocabulaire",titre:"Devoir - Vocabulaire",consigne:"Donne 5 mots du thème et dessine-les.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Français",sous:"Analyse",titre:"Devoir - Analyse",consigne:"Trouve le sujet et le verbe dans 5 phrases.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Sciences",sous:"Botanique",titre:"Devoir - Botanique",consigne:"Dessine une plante et nomme ses parties.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Sciences",sous:"Anatomie",titre:"Devoir - Anatomie",consigne:"Dessine le corps et nomme les parties.",date:"À remettre : Vendredi"},
+{classe:6,matiere:"Sciences",sous:"Zoologie",titre:"Devoir - Zoologie",consigne:"Liste 5 animaux et dis ce qu'ils mangent.",date:"À remettre : Vendredi"},
+];
+const TP=[
+{classe:1,matiere:"Math",sous:"Numération",titre:"TP - Numération",objectif:"Compter.",materiel:"Jetons, cahier.",etapes:"1. Compte les jetons. 2. Écris le nombre. 3. Vérifie.",obs:"Combien de jetons as-tu comptés ?"},
+{classe:1,matiere:"Math",sous:"Opérations",titre:"TP - Opérations",objectif:"Calculer.",materiel:"Cahier, crayon.",etapes:"1. Pose les opérations. 2. Calcule. 3. Vérifie.",obs:"As-tu vérifié ton résultat ?"},
+{classe:1,matiere:"Math",sous:"Géométrie",titre:"TP - Géométrie",objectif:"Tracer.",materiel:"Règle, équerre, cahier.",etapes:"1. Trace la figure. 2. Mesure les côtés. 3. Nomme.",obs:"Combien de côtés a ta figure ?"},
+{classe:1,matiere:"Math",sous:"Problème",titre:"TP - Problème",objectif:"Résoudre.",materiel:"Cahier.",etapes:"1. Lis le problème. 2. Écris le calcul. 3. Écris la réponse.",obs:"Ta réponse a-t-elle du sens ?"},
+{classe:1,matiere:"Math",sous:"Grandeur",titre:"TP - Grandeur",objectif:"Mesurer.",materiel:"Règle, objets.",etapes:"1. Mesure 3 objets. 2. Compare. 3. Note.",obs:"Quel objet est le plus long ?"},
+{classe:1,matiere:"Français",sous:"Orthographe",titre:"TP - Orthographe",objectif:"Écrire sans faute.",materiel:"Cahier.",etapes:"1. Écoute le mot. 2. Écris-le. 3. Relis.",obs:"Combien de mots sans faute ?"},
+{classe:1,matiere:"Français",sous:"Grammaire",titre:"TP - Grammaire",objectif:"Identifier.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Souligne le nom. 3. Justifie.",obs:"Pourquoi c'est un nom ?"},
+{classe:1,matiere:"Français",sous:"Conjugaison",titre:"TP - Conjugaison",objectif:"Conjuguer.",materiel:"Cahier.",etapes:"1. Dis le verbe. 2. Conjugue à voix haute. 3. Écris.",obs:"As-tu respecté la terminaison ?"},
+{classe:1,matiere:"Français",sous:"Vocabulaire",titre:"TP - Vocabulaire",objectif:"Nommer.",materiel:"Objets de la classe.",etapes:"1. Touche 5 objets. 2. Dis leur nom. 3. Écris-les.",obs:"Combien de mots as-tu trouvés ?"},
+{classe:1,matiere:"Français",sous:"Analyse",titre:"TP - Analyse",objectif:"Analyser.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Trouve le sujet. 3. Trouve le verbe.",obs:"Qui fait l'action ?"},
+{classe:1,matiere:"Sciences",sous:"Botanique",titre:"TP - Botanique",objectif:"Observer une plante.",materiel:"Plante, cahier.",etapes:"1. Regarde racine, tige, feuilles. 2. Dessine. 3. Écris.",obs:"Quelle partie absorbe l'eau ?"},
+{classe:1,matiere:"Sciences",sous:"Anatomie",titre:"TP - Anatomie",objectif:"Observer le corps.",materiel:"Miroir, cahier.",etapes:"1. Montre les parties. 2. Dessine. 3. Nomme.",obs:"Combien de doigts as-tu ?"},
+{classe:1,matiere:"Sciences",sous:"Zoologie",titre:"TP - Zoologie",objectif:"Observer un animal.",materiel:"Cahier.",etapes:"1. Nomme l'animal. 2. Dis ce qu'il mange. 3. Dessine.",obs:"Où vit cet animal ?"},
+{classe:2,matiere:"Math",sous:"Numération",titre:"TP - Numération",objectif:"Compter.",materiel:"Jetons, cahier.",etapes:"1. Compte les jetons. 2. Écris le nombre. 3. Vérifie.",obs:"Combien de jetons as-tu comptés ?"},
+{classe:2,matiere:"Math",sous:"Opérations",titre:"TP - Opérations",objectif:"Calculer.",materiel:"Cahier, crayon.",etapes:"1. Pose les opérations. 2. Calcule. 3. Vérifie.",obs:"As-tu vérifié ton résultat ?"},
+{classe:2,matiere:"Math",sous:"Géométrie",titre:"TP - Géométrie",objectif:"Tracer.",materiel:"Règle, équerre, cahier.",etapes:"1. Trace la figure. 2. Mesure les côtés. 3. Nomme.",obs:"Combien de côtés a ta figure ?"},
+{classe:2,matiere:"Math",sous:"Problème",titre:"TP - Problème",objectif:"Résoudre.",materiel:"Cahier.",etapes:"1. Lis le problème. 2. Écris le calcul. 3. Écris la réponse.",obs:"Ta réponse a-t-elle du sens ?"},
+{classe:2,matiere:"Math",sous:"Grandeur",titre:"TP - Grandeur",objectif:"Mesurer.",materiel:"Règle, objets.",etapes:"1. Mesure 3 objets. 2. Compare. 3. Note.",obs:"Quel objet est le plus long ?"},
+{classe:2,matiere:"Français",sous:"Orthographe",titre:"TP - Orthographe",objectif:"Écrire sans faute.",materiel:"Cahier.",etapes:"1. Écoute le mot. 2. Écris-le. 3. Relis.",obs:"Combien de mots sans faute ?"},
+{classe:2,matiere:"Français",sous:"Grammaire",titre:"TP - Grammaire",objectif:"Identifier.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Souligne le nom. 3. Justifie.",obs:"Pourquoi c'est un nom ?"},
+{classe:2,matiere:"Français",sous:"Conjugaison",titre:"TP - Conjugaison",objectif:"Conjuguer.",materiel:"Cahier.",etapes:"1. Dis le verbe. 2. Conjugue à voix haute. 3. Écris.",obs:"As-tu respecté la terminaison ?"},
+{classe:2,matiere:"Français",sous:"Vocabulaire",titre:"TP - Vocabulaire",objectif:"Nommer.",materiel:"Objets de la classe.",etapes:"1. Touche 5 objets. 2. Dis leur nom. 3. Écris-les.",obs:"Combien de mots as-tu trouvés ?"},
+{classe:2,matiere:"Français",sous:"Analyse",titre:"TP - Analyse",objectif:"Analyser.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Trouve le sujet. 3. Trouve le verbe.",obs:"Qui fait l'action ?"},
+{classe:2,matiere:"Sciences",sous:"Botanique",titre:"TP - Botanique",objectif:"Observer une plante.",materiel:"Plante, cahier.",etapes:"1. Regarde racine, tige, feuilles. 2. Dessine. 3. Écris.",obs:"Quelle partie absorbe l'eau ?"},
+{classe:2,matiere:"Sciences",sous:"Anatomie",titre:"TP - Anatomie",objectif:"Observer le corps.",materiel:"Miroir, cahier.",etapes:"1. Montre les parties. 2. Dessine. 3. Nomme.",obs:"Combien de doigts as-tu ?"},
+{classe:2,matiere:"Sciences",sous:"Zoologie",titre:"TP - Zoologie",objectif:"Observer un animal.",materiel:"Cahier.",etapes:"1. Nomme l'animal. 2. Dis ce qu'il mange. 3. Dessine.",obs:"Où vit cet animal ?"},
+{classe:3,matiere:"Math",sous:"Numération",titre:"TP - Numération",objectif:"Compter.",materiel:"Jetons, cahier.",etapes:"1. Compte les jetons. 2. Écris le nombre. 3. Vérifie.",obs:"Combien de jetons as-tu comptés ?"},
+{classe:3,matiere:"Math",sous:"Opérations",titre:"TP - Opérations",objectif:"Calculer.",materiel:"Cahier, crayon.",etapes:"1. Pose les opérations. 2. Calcule. 3. Vérifie.",obs:"As-tu vérifié ton résultat ?"},
+{classe:3,matiere:"Math",sous:"Géométrie",titre:"TP - Géométrie",objectif:"Tracer.",materiel:"Règle, équerre, cahier.",etapes:"1. Trace la figure. 2. Mesure les côtés. 3. Nomme.",obs:"Combien de côtés a ta figure ?"},
+{classe:3,matiere:"Math",sous:"Problème",titre:"TP - Problème",objectif:"Résoudre.",materiel:"Cahier.",etapes:"1. Lis le problème. 2. Écris le calcul. 3. Écris la réponse.",obs:"Ta réponse a-t-elle du sens ?"},
+{classe:3,matiere:"Math",sous:"Grandeur",titre:"TP - Grandeur",objectif:"Mesurer.",materiel:"Règle, objets.",etapes:"1. Mesure 3 objets. 2. Compare. 3. Note.",obs:"Quel objet est le plus long ?"},
+{classe:3,matiere:"Français",sous:"Orthographe",titre:"TP - Orthographe",objectif:"Écrire sans faute.",materiel:"Cahier.",etapes:"1. Écoute le mot. 2. Écris-le. 3. Relis.",obs:"Combien de mots sans faute ?"},
+{classe:3,matiere:"Français",sous:"Grammaire",titre:"TP - Grammaire",objectif:"Identifier.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Souligne le nom. 3. Justifie.",obs:"Pourquoi c'est un nom ?"},
+{classe:3,matiere:"Français",sous:"Conjugaison",titre:"TP - Conjugaison",objectif:"Conjuguer.",materiel:"Cahier.",etapes:"1. Dis le verbe. 2. Conjugue à voix haute. 3. Écris.",obs:"As-tu respecté la terminaison ?"},
+{classe:3,matiere:"Français",sous:"Vocabulaire",titre:"TP - Vocabulaire",objectif:"Nommer.",materiel:"Objets de la classe.",etapes:"1. Touche 5 objets. 2. Dis leur nom. 3. Écris-les.",obs:"Combien de mots as-tu trouvés ?"},
+{classe:3,matiere:"Français",sous:"Analyse",titre:"TP - Analyse",objectif:"Analyser.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Trouve le sujet. 3. Trouve le verbe.",obs:"Qui fait l'action ?"},
+{classe:3,matiere:"Sciences",sous:"Botanique",titre:"TP - Botanique",objectif:"Observer une plante.",materiel:"Plante, cahier.",etapes:"1. Regarde racine, tige, feuilles. 2. Dessine. 3. Écris.",obs:"Quelle partie absorbe l'eau ?"},
+{classe:3,matiere:"Sciences",sous:"Anatomie",titre:"TP - Anatomie",objectif:"Observer le corps.",materiel:"Miroir, cahier.",etapes:"1. Montre les parties. 2. Dessine. 3. Nomme.",obs:"Combien de doigts as-tu ?"},
+{classe:3,matiere:"Sciences",sous:"Zoologie",titre:"TP - Zoologie",objectif:"Observer un animal.",materiel:"Cahier.",etapes:"1. Nomme l'animal. 2. Dis ce qu'il mange. 3. Dessine.",obs:"Où vit cet animal ?"},
+{classe:4,matiere:"Math",sous:"Numération",titre:"TP - Numération",objectif:"Compter.",materiel:"Jetons, cahier.",etapes:"1. Compte les jetons. 2. Écris le nombre. 3. Vérifie.",obs:"Combien de jetons as-tu comptés ?"},
+{classe:4,matiere:"Math",sous:"Opérations",titre:"TP - Opérations",objectif:"Calculer.",materiel:"Cahier, crayon.",etapes:"1. Pose les opérations. 2. Calcule. 3. Vérifie.",obs:"As-tu vérifié ton résultat ?"},
+{classe:4,matiere:"Math",sous:"Géométrie",titre:"TP - Géométrie",objectif:"Tracer.",materiel:"Règle, équerre, cahier.",etapes:"1. Trace la figure. 2. Mesure les côtés. 3. Nomme.",obs:"Combien de côtés a ta figure ?"},
+{classe:4,matiere:"Math",sous:"Problème",titre:"TP - Problème",objectif:"Résoudre.",materiel:"Cahier.",etapes:"1. Lis le problème. 2. Écris le calcul. 3. Écris la réponse.",obs:"Ta réponse a-t-elle du sens ?"},
+{classe:4,matiere:"Math",sous:"Grandeur",titre:"TP - Grandeur",objectif:"Mesurer.",materiel:"Règle, objets.",etapes:"1. Mesure 3 objets. 2. Compare. 3. Note.",obs:"Quel objet est le plus long ?"},
+{classe:4,matiere:"Français",sous:"Orthographe",titre:"TP - Orthographe",objectif:"Écrire sans faute.",materiel:"Cahier.",etapes:"1. Écoute le mot. 2. Écris-le. 3. Relis.",obs:"Combien de mots sans faute ?"},
+{classe:4,matiere:"Français",sous:"Grammaire",titre:"TP - Grammaire",objectif:"Identifier.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Souligne le nom. 3. Justifie.",obs:"Pourquoi c'est un nom ?"},
+{classe:4,matiere:"Français",sous:"Conjugaison",titre:"TP - Conjugaison",objectif:"Conjuguer.",materiel:"Cahier.",etapes:"1. Dis le verbe. 2. Conjugue à voix haute. 3. Écris.",obs:"As-tu respecté la terminaison ?"},
+{classe:4,matiere:"Français",sous:"Vocabulaire",titre:"TP - Vocabulaire",objectif:"Nommer.",materiel:"Objets de la classe.",etapes:"1. Touche 5 objets. 2. Dis leur nom. 3. Écris-les.",obs:"Combien de mots as-tu trouvés ?"},
+{classe:4,matiere:"Français",sous:"Analyse",titre:"TP - Analyse",objectif:"Analyser.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Trouve le sujet. 3. Trouve le verbe.",obs:"Qui fait l'action ?"},
+{classe:4,matiere:"Sciences",sous:"Botanique",titre:"TP - Botanique",objectif:"Observer une plante.",materiel:"Plante, cahier.",etapes:"1. Regarde racine, tige, feuilles. 2. Dessine. 3. Écris.",obs:"Quelle partie absorbe l'eau ?"},
+{classe:4,matiere:"Sciences",sous:"Anatomie",titre:"TP - Anatomie",objectif:"Observer le corps.",materiel:"Miroir, cahier.",etapes:"1. Montre les parties. 2. Dessine. 3. Nomme.",obs:"Combien de doigts as-tu ?"},
+{classe:4,matiere:"Sciences",sous:"Zoologie",titre:"TP - Zoologie",objectif:"Observer un animal.",materiel:"Cahier.",etapes:"1. Nomme l'animal. 2. Dis ce qu'il mange. 3. Dessine.",obs:"Où vit cet animal ?"},
+{classe:5,matiere:"Math",sous:"Numération",titre:"TP - Numération",objectif:"Compter.",materiel:"Jetons, cahier.",etapes:"1. Compte les jetons. 2. Écris le nombre. 3. Vérifie.",obs:"Combien de jetons as-tu comptés ?"},
+{classe:5,matiere:"Math",sous:"Opérations",titre:"TP - Opérations",objectif:"Calculer.",materiel:"Cahier, crayon.",etapes:"1. Pose les opérations. 2. Calcule. 3. Vérifie.",obs:"As-tu vérifié ton résultat ?"},
+{classe:5,matiere:"Math",sous:"Géométrie",titre:"TP - Géométrie",objectif:"Tracer.",materiel:"Règle, équerre, cahier.",etapes:"1. Trace la figure. 2. Mesure les côtés. 3. Nomme.",obs:"Combien de côtés a ta figure ?"},
+{classe:5,matiere:"Math",sous:"Problème",titre:"TP - Problème",objectif:"Résoudre.",materiel:"Cahier.",etapes:"1. Lis le problème. 2. Écris le calcul. 3. Écris la réponse.",obs:"Ta réponse a-t-elle du sens ?"},
+{classe:5,matiere:"Math",sous:"Grandeur",titre:"TP - Grandeur",objectif:"Mesurer.",materiel:"Règle, objets.",etapes:"1. Mesure 3 objets. 2. Compare. 3. Note.",obs:"Quel objet est le plus long ?"},
+{classe:5,matiere:"Français",sous:"Orthographe",titre:"TP - Orthographe",objectif:"Écrire sans faute.",materiel:"Cahier.",etapes:"1. Écoute le mot. 2. Écris-le. 3. Relis.",obs:"Combien de mots sans faute ?"},
+{classe:5,matiere:"Français",sous:"Grammaire",titre:"TP - Grammaire",objectif:"Identifier.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Souligne le nom. 3. Justifie.",obs:"Pourquoi c'est un nom ?"},
+{classe:5,matiere:"Français",sous:"Conjugaison",titre:"TP - Conjugaison",objectif:"Conjuguer.",materiel:"Cahier.",etapes:"1. Dis le verbe. 2. Conjugue à voix haute. 3. Écris.",obs:"As-tu respecté la terminaison ?"},
+{classe:5,matiere:"Français",sous:"Vocabulaire",titre:"TP - Vocabulaire",objectif:"Nommer.",materiel:"Objets de la classe.",etapes:"1. Touche 5 objets. 2. Dis leur nom. 3. Écris-les.",obs:"Combien de mots as-tu trouvés ?"},
+{classe:5,matiere:"Français",sous:"Analyse",titre:"TP - Analyse",objectif:"Analyser.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Trouve le sujet. 3. Trouve le verbe.",obs:"Qui fait l'action ?"},
+{classe:5,matiere:"Sciences",sous:"Botanique",titre:"TP - Botanique",objectif:"Observer une plante.",materiel:"Plante, cahier.",etapes:"1. Regarde racine, tige, feuilles. 2. Dessine. 3. Écris.",obs:"Quelle partie absorbe l'eau ?"},
+{classe:5,matiere:"Sciences",sous:"Anatomie",titre:"TP - Anatomie",objectif:"Observer le corps.",materiel:"Miroir, cahier.",etapes:"1. Montre les parties. 2. Dessine. 3. Nomme.",obs:"Combien de doigts as-tu ?"},
+{classe:5,matiere:"Sciences",sous:"Zoologie",titre:"TP - Zoologie",objectif:"Observer un animal.",materiel:"Cahier.",etapes:"1. Nomme l'animal. 2. Dis ce qu'il mange. 3. Dessine.",obs:"Où vit cet animal ?"},
+{classe:6,matiere:"Math",sous:"Numération",titre:"TP - Numération",objectif:"Compter.",materiel:"Jetons, cahier.",etapes:"1. Compte les jetons. 2. Écris le nombre. 3. Vérifie.",obs:"Combien de jetons as-tu comptés ?"},
+{classe:6,matiere:"Math",sous:"Opérations",titre:"TP - Opérations",objectif:"Calculer.",materiel:"Cahier, crayon.",etapes:"1. Pose les opérations. 2. Calcule. 3. Vérifie.",obs:"As-tu vérifié ton résultat ?"},
+{classe:6,matiere:"Math",sous:"Géométrie",titre:"TP - Géométrie",objectif:"Tracer.",materiel:"Règle, équerre, cahier.",etapes:"1. Trace la figure. 2. Mesure les côtés. 3. Nomme.",obs:"Combien de côtés a ta figure ?"},
+{classe:6,matiere:"Math",sous:"Problème",titre:"TP - Problème",objectif:"Résoudre.",materiel:"Cahier.",etapes:"1. Lis le problème. 2. Écris le calcul. 3. Écris la réponse.",obs:"Ta réponse a-t-elle du sens ?"},
+{classe:6,matiere:"Math",sous:"Grandeur",titre:"TP - Grandeur",objectif:"Mesurer.",materiel:"Règle, objets.",etapes:"1. Mesure 3 objets. 2. Compare. 3. Note.",obs:"Quel objet est le plus long ?"},
+{classe:6,matiere:"Français",sous:"Orthographe",titre:"TP - Orthographe",objectif:"Écrire sans faute.",materiel:"Cahier.",etapes:"1. Écoute le mot. 2. Écris-le. 3. Relis.",obs:"Combien de mots sans faute ?"},
+{classe:6,matiere:"Français",sous:"Grammaire",titre:"TP - Grammaire",objectif:"Identifier.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Souligne le nom. 3. Justifie.",obs:"Pourquoi c'est un nom ?"},
+{classe:6,matiere:"Français",sous:"Conjugaison",titre:"TP - Conjugaison",objectif:"Conjuguer.",materiel:"Cahier.",etapes:"1. Dis le verbe. 2. Conjugue à voix haute. 3. Écris.",obs:"As-tu respecté la terminaison ?"},
+{classe:6,matiere:"Français",sous:"Vocabulaire",titre:"TP - Vocabulaire",objectif:"Nommer.",materiel:"Objets de la classe.",etapes:"1. Touche 5 objets. 2. Dis leur nom. 3. Écris-les.",obs:"Combien de mots as-tu trouvés ?"},
+{classe:6,matiere:"Français",sous:"Analyse",titre:"TP - Analyse",objectif:"Analyser.",materiel:"Cahier.",etapes:"1. Lis la phrase. 2. Trouve le sujet. 3. Trouve le verbe.",obs:"Qui fait l'action ?"},
+{classe:6,matiere:"Sciences",sous:"Botanique",titre:"TP - Botanique",objectif:"Observer une plante.",materiel:"Plante, cahier.",etapes:"1. Regarde racine, tige, feuilles. 2. Dessine. 3. Écris.",obs:"Quelle partie absorbe l'eau ?"},
+{classe:6,matiere:"Sciences",sous:"Anatomie",titre:"TP - Anatomie",objectif:"Observer le corps.",materiel:"Miroir, cahier.",etapes:"1. Montre les parties. 2. Dessine. 3. Nomme.",obs:"Combien de doigts as-tu ?"},
+{classe:6,matiere:"Sciences",sous:"Zoologie",titre:"TP - Zoologie",objectif:"Observer un animal.",materiel:"Cahier.",etapes:"1. Nomme l'animal. 2. Dis ce qu'il mange. 3. Dessine.",obs:"Où vit cet animal ?"},
+];
+function getSel(){return {c:+document.getElementById('classe').value,m:document.getElementById('matiere').value,s:document.getElementById('sous').value}}
+function majSous(){const m=document.getElementById('matiere').value;const sel=document.getElementById('sous');let list=m==="Toutes"?["Toutes les sous-branches"]:SOUS[m];sel.innerHTML=list.map(x=>`<option>${x}</option>`).join('');render()}
+function render(){const {c,m,s}=getSel();document.getElementById('choix').textContent=c+"ème Primaire • "+m+" • "+s;
+let cours=COURS.filter(x=>x.classe===c&&(m==="Toutes"||x.matiere===m)&&(s==="Toutes les sous-branches"||x.sous===s));
+document.getElementById('coursList').innerHTML=cours.length?cours.map(x=>`<div class="card"><span class="badge">${x.matiere} - ${x.sous} - ${c}ème Primaire</span><h3>${x.titre}</h3><p><b>Objectif :</b> ${x.objectif}</p><p><b>Contenu :</b> ${x.contenu}</p><p><b>Exemples :</b> ${x.exemples}</p><p><b>À retenir :</b> ${x.retenir}</p><button class="btn" onclick="go('exercices')">Passer à l'exercice d'application</button></div>`).join(''):`<div class="card"><h3>${m} - ${s} - ${c}ème Primaire</h3><p>Leçon à compléter. Copie un bloc dans <code>const COURS</code> avec <code>classe:${c}, matiere:"${m}", sous:"${s}"</code>.</p></div>`;
+let ex=EXERCICES.filter(x=>x.classe===c&&(m==="Toutes"||x.matiere===m)&&(s==="Toutes les sous-branches"||x.sous===s));
+document.getElementById('exList').innerHTML=ex.length?ex.map((x,i)=>`<div class="card"><h3>${x.matiere} - ${x.sous}</h3><p><b>${x.q}</b></p><div class="q">${x.opts.map((o,j)=>`<label><input type="radio" name="q${i}" value="${j}"> ${String.fromCharCode(65+j)}. ${o}</label>`).join('')}</div><button class="btn" onclick="verif(this,${x.rep},'${x.expl}')">Vérifier ma réponse</button><p class="res"></p><a class="btn wa" href="https://wa.me/24380000000${c}?text=${encodeURIComponent('Bonjour, élève de '+c+'ème Primaire, '+x.matiere+' - '+x.sous)}" target="_blank">Envoyer mon travail à l'enseignant via WhatsApp</a></div>`).join(''):`<div class="card"><p>Aucun exercice encore pour ${m} - ${s} - ${c}ème. Copie un bloc dans <code>const EXERCICES</code>.</p></div>`;
+document.getElementById('devList').innerHTML=DEVOIRS.filter(x=>x.classe===c&&(m==="Toutes"||x.matiere===m)&&(s==="Toutes les sous-branches"||x.sous===s)).map(x=>`<div class="card"><h3>${x.titre}</h3><p><b>Matière :</b> ${x.matiere} - ${x.sous}</p><p><b>Consigne :</b> ${x.consigne}</p><p><b>${x.date}</b> | État : En cours</p><a class="btn wa" href="https://wa.me/24380000000${c}" target="_blank">Remettre le devoir via WhatsApp</a></div>`).join('')||'<div class="card"><p>Devoir à compléter pour '+m+' - '+s+'.</p></div>';
+document.getElementById('tpList').innerHTML=TP.filter(x=>x.classe===c&&(m==="Toutes"||x.matiere===m)&&(s==="Toutes les sous-branches"||x.sous===s)).map(x=>`<div class="card"><h3>${x.titre}</h3><p><b>Objectif :</b> ${x.objectif}</p><p><b>Matériel :</b> ${x.materiel}</p><p><b>Déroulement :</b> ${x.etapes}</p><p><b>Observations :</b> ${x.obs}</p><a class="btn wa" href="https://wa.me/24380000000${c}" target="_blank">Envoyer mon TP via WhatsApp</a></div>`).join('')||'<div class="card"><p>TP à compléter pour '+m+' - '+s+'.</p></div>';
+}
+function go(id){document.querySelectorAll('main section').forEach(s=>s.classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.nav===id))}
+function verif(btn,rep,expl){let card=btn.closest('.card');let sel=card.querySelector('input:checked');if(!sel){card.querySelector('.res').textContent='Choisis d’abord une réponse.';return}card.querySelector('.res').textContent=(+sel.value===rep?'Réponse correcte. ':'Réponse incorrecte. ')+expl}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>go(b.dataset.nav));
+document.getElementById('classe').onchange=render;document.getElementById('matiere').onchange=majSous;document.getElementById('sous').onchange=render;
+majSous();
+</script>
+</body>
+</html>
